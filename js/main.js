@@ -4,12 +4,17 @@
 
 // Navigation scroll effect
 const nav = document.getElementById('nav');
+const scrollTopButton = document.querySelector('.scroll-top');
 
 window.addEventListener('scroll', () => {
   if (window.scrollY > 50) {
     nav.classList.add('scrolled');
   } else {
     nav.classList.remove('scrolled');
+  }
+
+  if (scrollTopButton) {
+    scrollTopButton.classList.toggle('is-visible', window.scrollY > 500);
   }
 });
 
@@ -56,6 +61,15 @@ if (navToggle) {
   });
 }
 
+if (scrollTopButton) {
+  scrollTopButton.addEventListener('click', () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  });
+}
+
 // Marquee animation
 const marqueeTrack = document.querySelector('.marquee-track');
 if (marqueeTrack) {
@@ -70,6 +84,25 @@ if (marqueeTrack) {
     marqueeTrack.appendChild(clone);
   }
 }
+
+// Gallery filter
+const galleryFilters = document.querySelectorAll('.gallery-filter');
+const galleryCards = document.querySelectorAll('.gallery-card');
+
+galleryFilters.forEach(button => {
+  button.addEventListener('click', () => {
+    const filter = button.getAttribute('data-filter');
+
+    galleryFilters.forEach(item => item.classList.remove('is-active'));
+    button.classList.add('is-active');
+
+    galleryCards.forEach(card => {
+      const category = card.getAttribute('data-category');
+      const shouldShow = filter === 'all' || category === filter;
+      card.classList.toggle('is-hidden', !shouldShow);
+    });
+  });
+});
 
 // Tab switching for estimator
 const tabButtons = document.querySelectorAll('.tab-button');
