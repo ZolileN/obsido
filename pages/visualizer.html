@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3D Visualizer — Obsido Interiors</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/styles.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav id="nav">
+  <a href="../index.html" class="logo">
+    OBSIDO
+    <span class="logo-sub">Interiors</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="../index.html#about">About</a></li>
+    <li><a href="../index.html#services">Services</a></li>
+    <li><a href="estimator.html">Cost Estimator</a></li>
+    <li><a href="visualizer.html">3D Visualizer</a></li>
+    <li><a href="../index.html#contact">Contact</a></li>
+  </ul>
+  <a href="estimator.html" class="nav-cta">Get Estimate</a>
+  <div class="nav-toggle">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <h1>3D Furniture Visualizer</h1>
+  <p>Customize your furniture design in real-time. Adjust dimensions, materials, and finishes to see exactly how your piece will look.</p>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="page-container">
+  <div class="tool-container">
+    <div class="visualizer-container">
+      
+      <!-- 3D CANVAS -->
+      <div class="canvas-wrapper">
+        <canvas id="canvas3d" style="width: 100%; height: 100%;"></canvas>
+        <div class="canvas-placeholder" id="canvas-placeholder">
+          <svg viewBox="0 0 100 100" fill="none" stroke="currentColor">
+            <rect x="10" y="20" width="80" height="60" stroke-width="1"/>
+            <line x1="30" y1="20" x2="30" y2="80"/>
+            <line x1="70" y1="20" x2="70" y2="80"/>
+            <circle cx="30" cy="50" r="3" fill="currentColor" stroke="none"/>
+            <circle cx="70" cy="50" r="3" fill="currentColor" stroke="none"/>
+          </svg>
+          <p>Loading 3D Visualizer...</p>
+        </div>
+      </div>
+
+      <!-- CONTROLS PANEL -->
+      <div class="tool-sidebar">
+        <h2 style="font-family: var(--font-d); font-size: 1.4rem; color: var(--cream); margin-bottom: 2rem;">Customize</h2>
+
+        <!-- Furniture Type -->
+        <div class="form-group">
+          <label>Furniture Type</label>
+          <select id="furniture-type-3d">
+            <option value="kitchen">Kitchen Cabinet</option>
+            <option value="wardrobe">Wardrobe</option>
+            <option value="shelving">Shelving Unit</option>
+          </select>
+        </div>
+
+        <!-- Material -->
+        <div class="form-group">
+          <label>Material</label>
+          <select id="material-3d">
+            <option value="oak">Oak</option>
+            <option value="walnut">Walnut</option>
+            <option value="white">White</option>
+            <option value="taupe">Taupe</option>
+          </select>
+        </div>
+
+        <!-- Finish -->
+        <div class="form-group">
+          <label>Finish</label>
+          <select id="finish-3d">
+            <option value="matte">Matte</option>
+            <option value="gloss">Gloss</option>
+            <option value="natural">Natural</option>
+          </select>
+        </div>
+
+        <!-- Dimensions Section -->
+        <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border);">
+          <h3 style="font-family: var(--font-d); font-size: 1rem; color: var(--cream); margin-bottom: 1.5rem;">Dimensions (cm)</h3>
+
+          <!-- Width -->
+          <div class="form-group">
+            <label>Width: <span id="width-display">120</span> cm</label>
+            <div class="slider-container">
+              <input type="range" id="width-slider" class="slider" min="60" max="200" step="5" value="120" />
+            </div>
+          </div>
+
+          <!-- Depth -->
+          <div class="form-group">
+            <label>Depth: <span id="depth-display">60</span> cm</label>
+            <div class="slider-container">
+              <input type="range" id="depth-slider" class="slider" min="30" max="100" step="5" value="60" />
+            </div>
+          </div>
+
+          <!-- Height -->
+          <div class="form-group">
+            <label>Height: <span id="height-display">90</span> cm</label>
+            <div class="slider-container">
+              <input type="range" id="height-slider" class="slider" min="60" max="240" step="5" value="90" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div style="margin-top: 2rem;">
+          <div class="action-buttons">
+            <button class="btn-secondary" onclick="resetVisualizer()">Reset</button>
+            <button class="btn-gold" onclick="exportDesign()">Export</button>
+          </div>
+        </div>
+
+        <!-- Help Text -->
+        <div style="margin-top: 2rem; padding: 1.5rem; background: var(--obsidian); border: 1px solid var(--border); border-radius: 4px;">
+          <p style="font-size: 0.75rem; color: var(--muted); line-height: 1.6;">
+            <strong style="color: var(--gold);">Controls:</strong><br/>
+            • Drag to rotate<br/>
+            • Scroll to zoom<br/>
+            • Right-click to pan
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-content">
+    <div class="footer-section">
+      <h4>Obsido Interiors</h4>
+      <p>Premium custom furniture and interior solutions.</p>
+    </div>
+    <div class="footer-section">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="estimator.html">Estimator</a></li>
+        <li><a href="visualizer.html">Visualizer</a></li>
+        <li><a href="../index.html#contact">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-section">
+      <h4>Services</h4>
+      <ul>
+        <li><a href="../index.html#services">Built-in Kitchens</a></li>
+        <li><a href="../index.html#services">Built-in Wardrobes</a></li>
+        <li><a href="../index.html#services">Custom Furniture</a></li>
+        <li><a href="../index.html#services">Laminated Flooring</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2026 Obsido Interiors. All rights reserved. Built with ❤️ by <a href='https://mlkcomputer.com'>MLK Computer Consulting</p>
+  </div>
+</footer>
+
+<script src="../js/visualizer.js"></script>
+<script src="../js/main.js"></script>
+</body>
+</html>
