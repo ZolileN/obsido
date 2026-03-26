@@ -56,6 +56,48 @@ function formatCurrency(value) {
   }).format(value);
 }
 
+function loadVisualizerEstimateRequest() {
+  const stored = localStorage.getItem('visualizerEstimateRequest');
+  if (!stored) return;
+
+  try {
+    const request = JSON.parse(stored);
+    if (!request.furnitureType || !furnitureTypeSelect) return;
+
+    furnitureTypeSelect.value = request.furnitureType;
+    estimatorState.quantity = request.quantity || 1;
+
+    if (furnitureQtySlider) {
+      furnitureQtySlider.value = estimatorState.quantity;
+    }
+
+    if (furnitureQtyDisplay) {
+      furnitureQtyDisplay.textContent = String(estimatorState.quantity);
+    }
+
+    handleFurnitureTypeChange({ target: furnitureTypeSelect });
+
+    const sourceNote = document.createElement('div');
+    sourceNote.className = 'summary-section';
+    sourceNote.innerHTML = `
+      <div class="summary-row">
+        <span class="summary-label">Visualizer Import</span>
+        <span class="summary-value">Ready</span>
+      </div>
+      <div class="summary-row" style="align-items:flex-start;">
+        <span class="summary-label">Design Notes</span>
+        <span class="summary-value" style="max-width:220px; text-align:right;">${request.visualizerSummary || 'Imported from 3D visualizer'}</span>
+      </div>
+    `;
+
+    updateSummary(sourceNote.outerHTML);
+  } catch (error) {
+    console.error('Failed to load visualizer estimate request', error);
+  } finally {
+    localStorage.removeItem('visualizerEstimateRequest');
+  }
+}
+
 // Event listeners
 if (furnitureTypeSelect) {
   furnitureTypeSelect.addEventListener('change', handleFurnitureTypeChange);
@@ -217,7 +259,7 @@ function resetEstimator() {
   updateSummary();
 }
 
-function updateSummary() {
+function updateSummary(extraContent = '') {
   if (!estimatorState.productType) {
     summaryContent.innerHTML = `
       <div style="text-align: center; padding: 2rem; color: var(--muted);">
@@ -265,6 +307,7 @@ function updateSummary() {
   const total = subtotalWithAddOns + tax;
   
   summaryContent.innerHTML = `
+    ${extraContent}
     <div class="summary-section">
       <div class="summary-row">
         <span class="summary-label">${productLine}</span>
@@ -313,4 +356,5 @@ function submitQuoteRequest() {
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
   updateSummary();
+  loadVisualizerEstimateRequest();
 });
