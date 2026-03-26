@@ -12,7 +12,6 @@
 </head>
 <body>
 
-<!-- NAVIGATION -->
 <nav id="nav">
   <a href="../index.html" class="logo">
     OBSIDO
@@ -34,60 +33,106 @@
   </div>
 </nav>
 
-<!-- PAGE HEADER -->
-<div class="page-header">
-  <h1>3D Furniture Visualizer</h1>
-  <p>Customize your furniture design in real-time. Adjust dimensions, materials, and finishes to see exactly how your piece will look.</p>
+<div class="page-header visualizer-page-header">
+  <div class="tool-container visualizer-header-shell">
+    <div class="visualizer-header-copy">
+      <span class="section-tag">Interactive Preview</span>
+      <h1>Visualize your built-in furniture in a real room context.</h1>
+      <p>Switch layouts, finishes, wall placement, room size, and camera views so the concept reads closer to a real installation before you request a quote.</p>
+    </div>
+    <div class="visualizer-header-stats">
+      <div class="visualizer-header-stat">
+        <strong>5</strong>
+        <span>Furniture types</span>
+      </div>
+      <div class="visualizer-header-stat">
+        <strong>4</strong>
+        <span>Camera views</span>
+      </div>
+      <div class="visualizer-header-stat">
+        <strong>Live</strong>
+        <span>Estimate handoff</span>
+      </div>
+    </div>
+  </div>
 </div>
 
-<!-- MAIN CONTENT -->
 <div class="page-container">
   <div class="tool-container">
     <div class="visualizer-container">
-      
-      <!-- 3D CANVAS -->
-      <div class="canvas-wrapper">
-        <canvas id="canvas3d" style="width: 100%; height: 100%;"></canvas>
-        <div class="canvas-placeholder" id="canvas-placeholder">
-          <svg viewBox="0 0 100 100" fill="none" stroke="currentColor">
-            <rect x="10" y="20" width="80" height="60" stroke-width="1"/>
-            <line x1="30" y1="20" x2="30" y2="80"/>
-            <line x1="70" y1="20" x2="70" y2="80"/>
-            <circle cx="30" cy="50" r="3" fill="currentColor" stroke="none"/>
-            <circle cx="70" cy="50" r="3" fill="currentColor" stroke="none"/>
-          </svg>
-          <p>Loading 3D Visualizer...</p>
+      <div class="canvas-stage">
+        <div class="canvas-wrapper visualizer-canvas-wrapper">
+          <canvas id="canvas3d" aria-label="3D room visualizer"></canvas>
+          <div class="canvas-placeholder" id="canvas-placeholder">
+            <svg viewBox="0 0 100 100" fill="none" stroke="currentColor">
+              <rect x="10" y="20" width="80" height="60" stroke-width="1"/>
+              <line x1="30" y1="20" x2="30" y2="80"/>
+              <line x1="70" y1="20" x2="70" y2="80"/>
+              <circle cx="30" cy="50" r="3" fill="currentColor" stroke="none"/>
+              <circle cx="70" cy="50" r="3" fill="currentColor" stroke="none"/>
+            </svg>
+            <p>Loading 3D Visualizer...</p>
+          </div>
+
+          <div class="canvas-hud">
+            <div class="canvas-pill">Drag to rotate</div>
+            <div class="canvas-pill">Scroll to zoom</div>
+            <div class="canvas-pill">Shift with placement controls</div>
+          </div>
+
+          <div class="measurement-overlay">
+            <div class="measurement-chip"><span>Furniture</span><strong id="measurement-furniture">120 x 60 x 90 cm</strong></div>
+            <div class="measurement-chip"><span>Room</span><strong id="measurement-room">420 x 520 x 280 cm</strong></div>
+            <div class="measurement-chip"><span>Placement</span><strong id="measurement-placement">Back wall centered</strong></div>
+          </div>
+        </div>
+
+        <div class="camera-modes">
+          <button class="camera-button active" data-camera="perspective" type="button">Perspective</button>
+          <button class="camera-button" data-camera="front" type="button">Front</button>
+          <button class="camera-button" data-camera="side" type="button">Side</button>
+          <button class="camera-button" data-camera="top" type="button">Top</button>
         </div>
       </div>
 
-      <!-- CONTROLS PANEL -->
-      <div class="tool-sidebar">
-        <h2 style="font-family: var(--font-d); font-size: 1.4rem; color: var(--cream); margin-bottom: 2rem;">Customize</h2>
+      <div class="tool-sidebar visualizer-sidebar">
+        <div class="visualizer-sidebar-head">
+          <h2>Configure the Space</h2>
+          <p>Choose a preset or refine each detail to match the room you want to picture in real life.</p>
+        </div>
 
-        <!-- Furniture Type -->
+        <div class="visualizer-presets">
+          <button class="preset-button active" data-preset="kitchen" type="button">Kitchen Run</button>
+          <button class="preset-button" data-preset="wardrobe" type="button">Wardrobe Wall</button>
+          <button class="preset-button" data-preset="shelving" type="button">Shelving Unit</button>
+          <button class="preset-button" data-preset="media" type="button">Media Console</button>
+          <button class="preset-button" data-preset="desk" type="button">Built-In Desk</button>
+        </div>
+
         <div class="form-group">
-          <label>Furniture Type</label>
+          <label for="furniture-type-3d">Furniture Type</label>
           <select id="furniture-type-3d">
             <option value="kitchen">Kitchen Cabinet</option>
             <option value="wardrobe">Wardrobe</option>
             <option value="shelving">Shelving Unit</option>
+            <option value="media">Media Console</option>
+            <option value="desk">Built-In Desk</option>
           </select>
         </div>
 
-        <!-- Material -->
         <div class="form-group">
-          <label>Material</label>
+          <label for="material-3d">Material Tone</label>
           <select id="material-3d">
             <option value="oak">Oak</option>
             <option value="walnut">Walnut</option>
             <option value="white">White</option>
             <option value="taupe">Taupe</option>
+            <option value="charcoal">Charcoal</option>
           </select>
         </div>
 
-        <!-- Finish -->
         <div class="form-group">
-          <label>Finish</label>
+          <label for="finish-3d">Finish</label>
           <select id="finish-3d">
             <option value="matte">Matte</option>
             <option value="gloss">Gloss</option>
@@ -95,60 +140,123 @@
           </select>
         </div>
 
-        <!-- Dimensions Section -->
-        <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border);">
-          <h3 style="font-family: var(--font-d); font-size: 1rem; color: var(--cream); margin-bottom: 1.5rem;">Dimensions (cm)</h3>
+        <div class="form-group">
+          <label for="front-style-3d">Front Style</label>
+          <select id="front-style-3d">
+            <option value="slab">Slab</option>
+            <option value="shaker">Shaker</option>
+            <option value="glass">Glass Frame</option>
+            <option value="slatted">Slatted</option>
+          </select>
+        </div>
 
-          <!-- Width -->
+        <div class="form-group">
+          <label for="hardware-3d">Hardware</label>
+          <select id="hardware-3d">
+            <option value="bar">Bar Handle</option>
+            <option value="finger">Finger Pull</option>
+            <option value="push">Push-to-open</option>
+          </select>
+        </div>
+
+        <div class="visualizer-room-section">
+          <div class="visualizer-help-title">Furniture Size</div>
+
           <div class="form-group">
-            <label>Width: <span id="width-display">120</span> cm</label>
+            <label for="width-slider">Width: <span id="width-display">120</span> cm</label>
             <div class="slider-container">
-              <input type="range" id="width-slider" class="slider" min="60" max="200" step="5" value="120" />
+              <input type="range" id="width-slider" class="slider" min="80" max="360" step="5" value="120" />
             </div>
           </div>
 
-          <!-- Depth -->
           <div class="form-group">
-            <label>Depth: <span id="depth-display">60</span> cm</label>
+            <label for="depth-slider">Depth: <span id="depth-display">60</span> cm</label>
             <div class="slider-container">
-              <input type="range" id="depth-slider" class="slider" min="30" max="100" step="5" value="60" />
+              <input type="range" id="depth-slider" class="slider" min="35" max="100" step="5" value="60" />
             </div>
           </div>
 
-          <!-- Height -->
           <div class="form-group">
-            <label>Height: <span id="height-display">90</span> cm</label>
+            <label for="height-slider">Height: <span id="height-display">90</span> cm</label>
             <div class="slider-container">
-              <input type="range" id="height-slider" class="slider" min="60" max="240" step="5" value="90" />
+              <input type="range" id="height-slider" class="slider" min="75" max="260" step="5" value="90" />
             </div>
           </div>
         </div>
 
-        <!-- Controls -->
-        <div style="margin-top: 2rem;">
-          <div class="action-buttons">
-            <button class="btn-secondary" onclick="resetVisualizer()">Reset</button>
-            <button class="btn-gold" onclick="exportDesign()">Export</button>
+        <div class="visualizer-room-section">
+          <div class="visualizer-help-title">Room Context</div>
+
+          <div class="form-group">
+            <label for="placement-3d">Wall Placement</label>
+            <select id="placement-3d">
+              <option value="back-center">Back wall centered</option>
+              <option value="back-left">Back wall left</option>
+              <option value="back-right">Back wall right</option>
+              <option value="side-left">Left wall</option>
+              <option value="side-right">Right wall</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="room-width-slider">Room Width: <span id="room-width-display">420</span> cm</label>
+            <div class="slider-container">
+              <input type="range" id="room-width-slider" class="slider" min="280" max="700" step="10" value="420" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="room-depth-slider">Room Depth: <span id="room-depth-display">520</span> cm</label>
+            <div class="slider-container">
+              <input type="range" id="room-depth-slider" class="slider" min="320" max="900" step="10" value="520" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="room-height-slider">Wall Height: <span id="room-height-display">280</span> cm</label>
+            <div class="slider-container">
+              <input type="range" id="room-height-slider" class="slider" min="220" max="360" step="5" value="280" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="wall-tone-3d">Wall Tone</label>
+            <select id="wall-tone-3d">
+              <option value="soft-ivory">Soft Ivory</option>
+              <option value="warm-greige">Warm Greige</option>
+              <option value="stone">Stone</option>
+              <option value="deep-olive">Deep Olive</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="floor-tone-3d">Floor Tone</label>
+            <select id="floor-tone-3d">
+              <option value="oak-floor">Natural Oak</option>
+              <option value="walnut-floor">Walnut</option>
+              <option value="concrete-floor">Concrete</option>
+              <option value="charcoal-floor">Charcoal</option>
+            </select>
           </div>
         </div>
 
-        <!-- Help Text -->
-        <div style="margin-top: 2rem; padding: 1.5rem; background: var(--obsidian); border: 1px solid var(--border); border-radius: 4px;">
-          <p style="font-size: 0.75rem; color: var(--muted); line-height: 1.6;">
-            <strong style="color: var(--gold);">Controls:</strong><br/>
-            • Drag to rotate<br/>
-            • Scroll to zoom<br/>
-            • Right-click to pan
-          </p>
+        <div class="action-buttons">
+          <button class="btn-secondary" id="reset-visualizer" type="button">Reset</button>
+          <button class="btn-secondary" id="export-visualizer" type="button">Export</button>
+        </div>
+        <div class="action-buttons visualizer-estimate-action">
+          <button class="btn-gold" id="send-to-estimate" type="button">Send to Estimate</button>
         </div>
 
+        <div class="visualizer-help">
+          <div class="visualizer-help-title">What this helps with</div>
+          <p>Use this preview to test proportion, finish contrast, room scale, and likely placement before you ask for pricing. The estimate handoff carries your selected design into the quote page.</p>
+        </div>
       </div>
-
     </div>
   </div>
 </div>
 
-<!-- FOOTER -->
 <footer>
   <div class="footer-content">
     <div class="footer-section">
