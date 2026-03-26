@@ -5,6 +5,8 @@
 // Navigation scroll effect
 const nav = document.getElementById('nav');
 const scrollTopButton = document.querySelector('.scroll-top');
+const mobileNav = document.getElementById('mobile-nav');
+const mobileClose = mobileNav?.querySelector('.mobile-close');
 
 window.addEventListener('scroll', () => {
   if (window.scrollY > 50) {
@@ -18,17 +20,66 @@ window.addEventListener('scroll', () => {
   }
 });
 
-// Smooth scroll for anchor links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+function getNavOffset() {
+  return nav ? nav.offsetHeight + 16 : 96;
+}
+
+function closeMobileNav() {
+  if (!mobileNav) return;
+  mobileNav.classList.remove('open');
+  mobileNav.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+
+function openMobileNav() {
+  if (!mobileNav) return;
+  mobileNav.classList.add('open');
+  mobileNav.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+}
+
+function scrollToHash(hash, replaceState = false) {
+  if (!hash || hash === '#') return false;
+  const target = document.querySelector(hash);
+  if (!target) return false;
+
+  const top = target.getBoundingClientRect().top + window.scrollY - getNavOffset();
+  window.scrollTo({
+    top,
+    behavior: 'smooth'
+  });
+
+  if (replaceState) {
+    history.replaceState(null, '', hash);
+  }
+
+  return true;
+}
+
+document.querySelectorAll('a[href]').forEach((anchor) => {
   anchor.addEventListener('click', function (e) {
     const href = this.getAttribute('href');
-    if (href !== '#' && document.querySelector(href)) {
+    if (!href || href === '#') return;
+
+    const url = new URL(href, window.location.href);
+    const isSamePage = url.origin === window.location.origin && url.pathname === window.location.pathname;
+
+    if (isSamePage && url.hash && document.querySelector(url.hash)) {
       e.preventDefault();
-      document.querySelector(href).scrollIntoView({
-        behavior: 'smooth'
-      });
+      closeMobileNav();
+      scrollToHash(url.hash, true);
+    } else if (mobileNav?.classList.contains('open')) {
+      closeMobileNav();
     }
   });
+});
+
+window.addEventListener('load', () => {
+  if (window.location.hash) {
+    setTimeout(() => {
+      scrollToHash(window.location.hash, false);
+    }, 60);
+  }
 });
 
 // Reveal animation on scroll
@@ -57,9 +108,36 @@ const navLinks = document.querySelector('.nav-links');
 
 if (navToggle) {
   navToggle.addEventListener('click', () => {
-    navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+    if (!mobileNav) {
+      navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+      return;
+    }
+
+    if (mobileNav.classList.contains('open')) {
+      closeMobileNav();
+    } else {
+      openMobileNav();
+    }
   });
 }
+
+if (mobileClose) {
+  mobileClose.addEventListener('click', closeMobileNav);
+}
+
+if (mobileNav) {
+  mobileNav.addEventListener('click', (event) => {
+    if (event.target === mobileNav) {
+      closeMobileNav();
+    }
+  });
+}
+
+window.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') {
+    closeMobileNav();
+  }
+});
 
 if (scrollTopButton) {
   scrollTopButton.addEventListener('click', () => {
@@ -119,6 +197,10 @@ tabButtons.forEach(button => {
     // Add active class to clicked button and corresponding content
     button.classList.add('active');
     document.getElementById(tabName + '-tab').classList.add('active');
+
+    if (typeof window.handleEstimatorTabSwitch === 'function') {
+      window.handleEstimatorTabSwitch(tabName);
+    }
   });
 });
 

@@ -2,14 +2,15 @@
    3D VISUALIZER - JAVASCRIPT (Three.js)
    ============================================ */
 
-let scene, camera, renderer, furniture, floorMesh, backWallMesh, sideWallMesh, rugMesh;
+let scene, camera, renderer, furniture, floorMesh, backWallMesh, leftWallMesh, rightWallMesh, rugMesh;
 
 // Material colors
 const materialColors = {
   oak: 0xD2B48C,
   walnut: 0x5C4033,
   white: 0xF5F5F5,
-  taupe: 0xA89968
+  taupe: 0xA89968,
+  charcoal: 0x44413e
 };
 
 // Finish properties
@@ -117,13 +118,21 @@ function initThreeJS() {
   backWallMesh.position.set(0, 4, -3.2);
   scene.add(backWallMesh);
 
-  sideWallMesh = new THREE.Mesh(
+  leftWallMesh = new THREE.Mesh(
     new THREE.PlaneGeometry(14, 8),
     new THREE.MeshStandardMaterial({ color: 0x141311, roughness: 1 })
   );
-  sideWallMesh.rotation.y = Math.PI / 2;
-  sideWallMesh.position.set(-4.5, 4, 0);
-  scene.add(sideWallMesh);
+  leftWallMesh.rotation.y = Math.PI / 2;
+  leftWallMesh.position.set(-4.5, 4, 0);
+  scene.add(leftWallMesh);
+
+  rightWallMesh = new THREE.Mesh(
+    new THREE.PlaneGeometry(14, 8),
+    new THREE.MeshStandardMaterial({ color: 0x141311, roughness: 1 })
+  );
+  rightWallMesh.rotation.y = -Math.PI / 2;
+  rightWallMesh.position.set(4.5, 4, 0);
+  scene.add(rightWallMesh);
 
   rugMesh = new THREE.Mesh(
     new THREE.PlaneGeometry(4.6, 3.2),
@@ -206,27 +215,28 @@ function createFurniture() {
   }
   
   updateFurniturePlacement(scaledWidth, scaledDepth);
-  updateMeasurementOverlay();
   scene.add(furniture);
 }
 
 function updateEnvironment() {
-  if (!floorMesh || !backWallMesh || !sideWallMesh || !rugMesh) return;
+  if (!floorMesh || !backWallMesh || !leftWallMesh || !rightWallMesh || !rugMesh) return;
   const roomWidth = config.roomWidth / 100;
   const roomDepth = config.roomDepth / 100;
   const roomHeight = config.roomHeight / 100;
 
   floorMesh.material.color.setHex(floorTones[config.floorTone]);
   backWallMesh.material.color.setHex(wallTones[config.wallTone]);
-  sideWallMesh.material.color.setHex(wallTones[config.wallTone]);
+  leftWallMesh.material.color.setHex(wallTones[config.wallTone]);
+  rightWallMesh.material.color.setHex(wallTones[config.wallTone]);
   rugMesh.material.color.setHex(config.wallTone === 'charcoal' ? 0x8d816f : 0xb7a589);
   floorMesh.scale.set(roomWidth / 14, roomDepth / 14, 1);
   backWallMesh.scale.set(roomWidth / 14, roomHeight / 8, 1);
   backWallMesh.position.set(0, roomHeight / 2, -roomDepth / 2 + 0.01);
-  sideWallMesh.scale.set(roomDepth / 14, roomHeight / 8, 1);
-  sideWallMesh.position.set(-roomWidth / 2 + 0.01, roomHeight / 2, 0);
+  leftWallMesh.scale.set(roomDepth / 14, roomHeight / 8, 1);
+  leftWallMesh.position.set(-roomWidth / 2 + 0.01, roomHeight / 2, 0);
+  rightWallMesh.scale.set(roomDepth / 14, roomHeight / 8, 1);
+  rightWallMesh.position.set(roomWidth / 2 - 0.01, roomHeight / 2, 0);
   rugMesh.position.set(0, 0.01, roomDepth * 0.1);
-  updateMeasurementOverlay();
 }
 
 function updateFurniturePlacement(width, depth) {
@@ -255,20 +265,16 @@ function updateFurniturePlacement(width, depth) {
   }
 }
 
-function updateMeasurementOverlay() {
-  const furnitureLabel = document.getElementById('furniture-measurements');
-  const roomLabel = document.getElementById('room-measurements');
-  const placementLabel = document.getElementById('placement-display');
-  if (furnitureLabel) {
-    furnitureLabel.textContent = `${config.width}w × ${config.depth}d × ${config.height}h cm`;
-  }
-  if (roomLabel) {
-    roomLabel.textContent = `${config.roomWidth}w × ${config.roomDepth}d × ${config.roomHeight}h cm`;
-  }
-  if (placementLabel) {
-    const labelMap = { back: 'Back wall', left: 'Left wall', right: 'Right wall', center: 'Center stage' };
-    placementLabel.textContent = labelMap[config.placement];
-  }
+function getCameraTargetY() {
+  return Math.max(0.9, config.height / 160);
+}
+
+function getCameraTarget() {
+  return new THREE.Vector3(
+    furniture ? furniture.position.x : 0,
+    getCameraTargetY(),
+    furniture ? furniture.position.z : 0
+  );
 }
 
 function addPanel(group, geometry, material, x, y, z) {
@@ -527,27 +533,27 @@ function setupControls(canvas) {
   
   function updateCamera() {
     autoRotateAngle += 0.003;
-    const targetY = Math.max(0.9, config.height / 160);
+    const target = getCameraTarget();
 
     if (config.cameraMode === 'perspective') {
       camera.position.x = zoomRadius * Math.sin(rotation.y + autoRotateAngle) * Math.cos(rotation.x);
-      camera.position.y = zoomRadius * Math.sin(rotation.x) + targetY;
+      camera.position.y = zoomRadius * Math.sin(rotation.x) + target.y;
       camera.position.z = zoomRadius * Math.cos(rotation.y + autoRotateAngle) * Math.cos(rotation.x);
     }
 
     if (config.cameraMode === 'front') {
-      camera.position.set(0, targetY + 0.5, 4.2);
+      camera.position.set(target.x, target.y + 0.5, target.z + 4.2);
     }
 
     if (config.cameraMode === 'side') {
-      camera.position.set(4.2, targetY + 0.45, 0);
+      camera.position.set(target.x + 4.2, target.y + 0.45, target.z);
     }
 
     if (config.cameraMode === 'top') {
-      camera.position.set(0, 6.5, 0.001);
+      camera.position.set(target.x, 6.5, target.z + 0.001);
     }
     
-    camera.lookAt(0, targetY, 0);
+    camera.lookAt(target);
   }
   
   // Store updateCamera for animation loop
@@ -666,7 +672,6 @@ document.addEventListener('DOMContentLoaded', () => {
       config.height = parseInt(e.target.value);
       document.getElementById('height-display').textContent = config.height;
       createFurniture();
-      updateMeasurementOverlay();
     });
   }
 
@@ -696,6 +701,7 @@ document.addEventListener('DOMContentLoaded', () => {
       config.roomHeight = parseInt(e.target.value);
       document.getElementById('room-height-display').textContent = String(config.roomHeight);
       updateEnvironment();
+      createFurniture();
     });
   }
 
@@ -704,7 +710,6 @@ document.addEventListener('DOMContentLoaded', () => {
     placementSelect.addEventListener('change', (e) => {
       config.placement = e.target.value;
       updateFurniturePlacement(config.width / 100, config.depth / 100);
-      updateMeasurementOverlay();
     });
   }
 
@@ -718,13 +723,52 @@ document.addEventListener('DOMContentLoaded', () => {
     button.addEventListener('click', () => {
       config.cameraMode = button.getAttribute('data-camera');
       syncCameraButtons();
+      if (window.updateCamera) {
+        window.updateCamera();
+      }
     });
   });
 
+  const advancedToggle = document.getElementById('advanced-toggle');
+  const advancedControls = document.getElementById('advanced-controls');
+  if (advancedToggle && advancedControls) {
+    advancedControls.style.display = 'none';
+  }
+
+  syncFormControls();
   syncPresetButtons();
   syncCameraButtons();
-  updateMeasurementOverlay();
 });
+
+function toggleAdvancedOptions() {
+  const advancedToggle = document.getElementById('advanced-toggle');
+  const advancedControls = document.getElementById('advanced-controls');
+  if (!advancedToggle || !advancedControls) return;
+
+  const isOpen = advancedToggle.getAttribute('aria-expanded') === 'true';
+  advancedToggle.setAttribute('aria-expanded', String(!isOpen));
+  advancedControls.style.display = isOpen ? 'none' : 'grid';
+
+  const icon = advancedToggle.querySelector('.advanced-toggle-icon');
+  if (icon) {
+    icon.textContent = isOpen ? '+' : '−';
+  }
+}
+
+function toggleFinishOptions() {
+  const finishToggle = document.getElementById('finish-toggle');
+  const finishControls = document.getElementById('finish-controls');
+  if (!finishToggle || !finishControls) return;
+
+  const isOpen = finishToggle.getAttribute('aria-expanded') === 'true';
+  finishToggle.setAttribute('aria-expanded', String(!isOpen));
+  finishControls.style.display = isOpen ? 'none' : 'grid';
+
+  const icon = finishToggle.querySelector('.advanced-toggle-icon');
+  if (icon) {
+    icon.textContent = isOpen ? '+' : '−';
+  }
+}
 
 function resetVisualizer() {
   applyPreset('kitchen');
@@ -775,6 +819,14 @@ function applyPreset(name) {
   if (!preset) return;
 
   config = { ...preset };
+  syncFormControls();
+  syncPresetButtons();
+  syncCameraButtons();
+  updateEnvironment();
+  createFurniture();
+}
+
+function syncFormControls() {
   document.getElementById('furniture-type-3d').value = config.type;
   document.getElementById('material-3d').value = config.material;
   document.getElementById('finish-3d').value = config.finish;
@@ -783,22 +835,18 @@ function applyPreset(name) {
   document.getElementById('wall-tone-3d').value = config.wallTone;
   document.getElementById('floor-tone-3d').value = config.floorTone;
   document.getElementById('placement-3d').value = config.placement;
-  document.getElementById('width-slider').value = config.width;
-  document.getElementById('depth-slider').value = config.depth;
-  document.getElementById('height-slider').value = config.height;
-  document.getElementById('room-width-slider').value = config.roomWidth;
-  document.getElementById('room-depth-slider').value = config.roomDepth;
-  document.getElementById('room-height-slider').value = config.roomHeight;
+  document.getElementById('width-slider').value = String(config.width);
+  document.getElementById('depth-slider').value = String(config.depth);
+  document.getElementById('height-slider').value = String(config.height);
+  document.getElementById('room-width-slider').value = String(config.roomWidth);
+  document.getElementById('room-depth-slider').value = String(config.roomDepth);
+  document.getElementById('room-height-slider').value = String(config.roomHeight);
   document.getElementById('width-display').textContent = String(config.width);
   document.getElementById('depth-display').textContent = String(config.depth);
   document.getElementById('height-display').textContent = String(config.height);
   document.getElementById('room-width-display').textContent = String(config.roomWidth);
   document.getElementById('room-depth-display').textContent = String(config.roomDepth);
   document.getElementById('room-height-display').textContent = String(config.roomHeight);
-  syncPresetButtons();
-  syncCameraButtons();
-  updateEnvironment();
-  createFurniture();
 }
 
 function syncPresetButtons() {

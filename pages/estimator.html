@@ -32,6 +32,17 @@
     <span></span><span></span><span></span>
   </div>
 </nav>
+<div class="mobile-nav" id="mobile-nav" aria-hidden="true">
+  <button class="mobile-close" type="button" aria-label="Close navigation">&times;</button>
+  <a href="../index.html#about">About</a>
+  <a href="../index.html#services">Services</a>
+  <a href="../index.html#process">Process</a>
+  <a href="../index.html#gallery">Gallery</a>
+  <a href="../index.html#testimonial">Testimonials</a>
+  <a href="estimator.html">Cost Estimator</a>
+  <a href="visualizer.html">3D Visualizer</a>
+  <a href="../index.html#contact">Contact</a>
+</div>
 
 <!-- PAGE HEADER -->
 <div class="page-header">
@@ -130,11 +141,42 @@
           </div>
         </div>
 
+        <div class="estimator-customer-section">
+          <h3 class="estimator-section-title">Project & Contact Details</h3>
+          <div class="estimator-form-grid">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input id="customer-name" type="text" placeholder="Your full name" />
+            </div>
+            <div class="form-group">
+              <label>Phone / WhatsApp</label>
+              <input id="customer-phone" type="tel" placeholder="071 460 6344" />
+            </div>
+            <div class="form-group">
+              <label>Email Address</label>
+              <input id="customer-email" type="email" placeholder="name@example.com" />
+            </div>
+            <div class="form-group">
+              <label>City / Area</label>
+              <input id="customer-city" type="text" placeholder="Cape Town" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Project Notes</label>
+            <textarea id="customer-notes" rows="4" placeholder="Tell us about your layout, preferred finish, or installation needs."></textarea>
+          </div>
+        </div>
+
         <!-- ACTION BUTTONS -->
         <div style="margin-top: 3rem;">
           <div class="action-buttons">
             <button class="btn-secondary" onclick="resetEstimator()">Reset</button>
+            <button class="btn-secondary" onclick="sendEstimateToWhatsApp()">Send to WhatsApp</button>
             <button class="btn-gold" onclick="submitQuoteRequest()">Request Quote</button>
+          </div>
+          <div id="quote-success-message" class="quote-success-message" style="display: none;">
+            <strong>Thank you.</strong>
+            <p>Your quote request was sent successfully. Obsido Interiors will contact you shortly to confirm your project details and next steps.</p>
           </div>
         </div>
 
@@ -148,6 +190,11 @@
           <div style="text-align: center; padding: 2rem; color: var(--muted);">
             <p>Select a product to see pricing</p>
           </div>
+        </div>
+
+        <div class="estimator-note-card">
+          <div class="visualizer-help-title">How to use this estimate</div>
+          <p>This estimate gives you a strong starting range. Send it on WhatsApp or request a quote and we can confirm dimensions, finishes, and installation details.</p>
         </div>
 
       </div>
