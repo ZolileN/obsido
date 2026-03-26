@@ -140,7 +140,6 @@ function buildBaseBreakdown(subtotal) {
     ['Fit Planning', fitting]
   ];
 }
-
 // Event listeners
 if (furnitureTypeSelect) {
   furnitureTypeSelect.addEventListener('change', handleFurnitureTypeChange);
@@ -311,7 +310,7 @@ function resetEstimator() {
   updateSummary();
 }
 
-function updateSummary() {
+function updateSummary(extraContent = '') {
   if (!estimatorState.productType) {
     summaryContent.innerHTML = `
       <div style="text-align: center; padding: 2rem; color: var(--muted);">
@@ -366,6 +365,7 @@ function updateSummary() {
   const total = subtotalWithAddOns + tax;
   
   summaryContent.innerHTML = `
+    ${extraContent}
     <div class="summary-section">
       <div class="summary-row">
         <span class="summary-label">${productLine}</span>

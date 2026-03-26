@@ -272,25 +272,19 @@ function createFurniture() {
     opacity: config.frontStyle === 'glass' ? 0.65 : 1
   });
 
-  const hardwareMaterial = new THREE.MeshStandardMaterial({
-    color: 0x1d1b1a,
-    roughness: 0.35,
-    metalness: 0.62
-  });
-
   const topHeight = config.type === 'wardrobe' || config.type === 'shelving' ? height : height - 0.1;
   addCabinetShell(width, topHeight, depth, carcassMaterial);
 
   if (config.type === 'kitchen') {
-    addKitchenDetails(width, depth, height, carcassMaterial, accentMaterial, hardwareMaterial);
+    addKitchenDetails(width, depth, height, carcassMaterial, accentMaterial);
   } else if (config.type === 'wardrobe') {
-    addWardrobeDetails(width, depth, height, carcassMaterial, accentMaterial, hardwareMaterial);
+    addWardrobeDetails(width, depth, height, carcassMaterial, accentMaterial);
   } else if (config.type === 'shelving') {
     addShelvingDetails(width, depth, height, carcassMaterial, accentMaterial);
   } else if (config.type === 'media') {
-    addMediaConsoleDetails(width, depth, height, carcassMaterial, accentMaterial, hardwareMaterial);
+    addMediaConsoleDetails(width, depth, height, carcassMaterial, accentMaterial);
   } else if (config.type === 'desk') {
-    addDeskDetails(width, depth, height, carcassMaterial, accentMaterial, hardwareMaterial);
+    addDeskDetails(width, depth, height, carcassMaterial, accentMaterial);
   }
 
   updateFurniturePlacement(width, depth, height);
