@@ -196,9 +196,9 @@ obsido-production/
 
 ## License
 
-© 2024 Obsido Interiors. All rights reserved.
+© 2026 Obsido Interiors. All rights reserved.
 
 ---
 
-**Last Updated:** March 26, 2024
+**Last Updated:** March 26, 2026
 **Version:** 1.0
