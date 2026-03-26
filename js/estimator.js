@@ -4,27 +4,27 @@
 
 // Furniture pricing data
 const furnitureOptions = {
-  'kitchen-basic': { name: 'Basic Kitchen Cabinet Set', basePrice: 2500, unit: 'set' },
-  'kitchen-premium': { name: 'Premium Kitchen with Island', basePrice: 5500, unit: 'set' },
-  'wardrobe-standard': { name: 'Standard Wardrobe System', basePrice: 3000, unit: 'set' },
-  'wardrobe-luxury': { name: 'Luxury Walk-In Wardrobe', basePrice: 7500, unit: 'set' },
-  'custom-shelving': { name: 'Custom Shelving Unit', basePrice: 1800, unit: 'unit' },
-  'custom-desk': { name: 'Custom Built-In Desk', basePrice: 2200, unit: 'unit' }
+  'kitchen-basic': { name: 'Basic Kitchen Cabinet Set', basePrice: 41500, unit: 'set' },
+  'kitchen-premium': { name: 'Premium Kitchen with Island', basePrice: 91300, unit: 'set' },
+  'wardrobe-standard': { name: 'Standard Wardrobe System', basePrice: 49800, unit: 'set' },
+  'wardrobe-luxury': { name: 'Luxury Walk-In Wardrobe', basePrice: 124500, unit: 'set' },
+  'custom-shelving': { name: 'Custom Shelving Unit', basePrice: 29900, unit: 'unit' },
+  'custom-desk': { name: 'Custom Built-In Desk', basePrice: 36500, unit: 'unit' }
 };
 
 // Flooring pricing data
 const flooringOptions = {
-  'laminate-standard': { name: 'Standard Laminate Flooring', pricePerSqFt: 3.50 },
-  'laminate-premium': { name: 'Premium Laminate Flooring', pricePerSqFt: 5.50 },
-  'flooring-luxury': { name: 'Luxury Laminate with Installation', pricePerSqFt: 8.00 }
+  'laminate-standard': { name: 'Standard Laminate Flooring', pricePerSqFt: 58 },
+  'laminate-premium': { name: 'Premium Laminate Flooring', pricePerSqFt: 91 },
+  'flooring-luxury': { name: 'Luxury Laminate with Installation', pricePerSqFt: 133 }
 };
 
 // Add-on pricing
 const addOns = {
-  'delivery': 500,
-  'installation': 800,
-  'finishing': 400,
-  'warranty': 300
+  'delivery': 8300,
+  'installation': 13300,
+  'finishing': 6600,
+  'warranty': 5000
 };
 
 // State
@@ -34,7 +34,7 @@ let estimatorState = {
   quantity: 1,
   area: 500,
   selectedAddOns: {},
-  tax: 0.1
+  tax: 0.15
 };
 
 // DOM Elements
@@ -47,6 +47,14 @@ const flooringAreaDisplay = document.getElementById('flooring-area-display');
 const flooringAreaInput = document.getElementById('flooring-area-input');
 const addonCheckboxes = document.querySelectorAll('.addon-check');
 const summaryContent = document.getElementById('summary-content');
+
+function formatCurrency(value) {
+  return new Intl.NumberFormat('en-ZA', {
+    style: 'currency',
+    currency: 'ZAR',
+    maximumFractionDigits: 0
+  }).format(value);
+}
 
 // Event listeners
 if (furnitureTypeSelect) {
@@ -196,7 +204,7 @@ function resetEstimator() {
     quantity: 1,
     area: 500,
     selectedAddOns: {},
-    tax: 0.1
+    tax: 0.15
   };
   
   // Reset display
@@ -247,7 +255,7 @@ function updateSummary() {
     addOnsHTML += `
       <div class="summary-row">
         <span class="summary-label">${addonLabel}</span>
-        <span class="summary-value">$${addonPrice.toLocaleString()}</span>
+        <span class="summary-value">${formatCurrency(addonPrice)}</span>
       </div>
     `;
   }
@@ -260,20 +268,20 @@ function updateSummary() {
     <div class="summary-section">
       <div class="summary-row">
         <span class="summary-label">${productLine}</span>
-        <span class="summary-value">$${subtotal.toLocaleString()}</span>
+        <span class="summary-value">${formatCurrency(subtotal)}</span>
       </div>
       ${addOnsHTML}
       <div class="summary-row" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border);">
         <span class="summary-label">Subtotal</span>
-        <span class="summary-value">$${subtotalWithAddOns.toLocaleString()}</span>
+        <span class="summary-value">${formatCurrency(subtotalWithAddOns)}</span>
       </div>
       <div class="summary-row">
-        <span class="summary-label">Tax (10%)</span>
-        <span class="summary-value">$${tax.toLocaleString()}</span>
+        <span class="summary-label">VAT (15%)</span>
+        <span class="summary-value">${formatCurrency(tax)}</span>
       </div>
       <div class="summary-row total">
         <span>Total</span>
-        <span>$${total.toLocaleString()}</span>
+        <span>${formatCurrency(total)}</span>
       </div>
     </div>
   `;

@@ -163,6 +163,13 @@ function setupControls(canvas) {
   let isDragging = false;
   let previousMousePosition = { x: 0, y: 0 };
   let rotation = { x: 0, y: 0 };
+  const minZoomRadius = 2.4;
+  const maxZoomRadius = 4.2;
+  let zoomRadius = Math.sqrt(
+    camera.position.x ** 2 +
+    (camera.position.y - 1) ** 2 +
+    camera.position.z ** 2
+  );
   
   canvas.addEventListener('mousedown', (e) => {
     isDragging = true;
@@ -196,11 +203,11 @@ function setupControls(canvas) {
   // Zoom with scroll
   canvas.addEventListener('wheel', (e) => {
     e.preventDefault();
-    const zoomSpeed = 0.1;
+    const zoomStep = 0.3;
     if (e.deltaY < 0) {
-      camera.position.multiplyScalar(1 - zoomSpeed);
+      zoomRadius = Math.max(minZoomRadius, zoomRadius - zoomStep);
     } else {
-      camera.position.multiplyScalar(1 + zoomSpeed);
+      zoomRadius = Math.min(maxZoomRadius, zoomRadius + zoomStep);
     }
   }, { passive: false });
   
@@ -209,15 +216,9 @@ function setupControls(canvas) {
   
   function updateCamera() {
     autoRotateAngle += 0.003;
-    const radius = Math.sqrt(
-      camera.position.x ** 2 + 
-      camera.position.y ** 2 + 
-      camera.position.z ** 2
-    );
-    
-    camera.position.x = radius * Math.sin(rotation.y + autoRotateAngle) * Math.cos(rotation.x);
-    camera.position.y = radius * Math.sin(rotation.x) + 1;
-    camera.position.z = radius * Math.cos(rotation.y + autoRotateAngle) * Math.cos(rotation.x);
+    camera.position.x = zoomRadius * Math.sin(rotation.y + autoRotateAngle) * Math.cos(rotation.x);
+    camera.position.y = zoomRadius * Math.sin(rotation.x) + 1;
+    camera.position.z = zoomRadius * Math.cos(rotation.y + autoRotateAngle) * Math.cos(rotation.x);
     
     camera.lookAt(0, 1, 0);
   }
